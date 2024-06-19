@@ -31,12 +31,16 @@ public class UIController : MonoBehaviour
     private float _deathScreenLength = 2;
     private float _deathScreenTimer;
 
+    private List<float> frames;
+    private float fps = 0;
+
     private void Start()
     {
         if (SceneManager.GetActiveScene().buildIndex == 1 && GameManager.instance.weaponController.CurrentWeapon == null)
         {
             _weaponBar.SetActive(false);
         }
+        frames = new List<float>();
     }
 
     void Update()
@@ -56,6 +60,25 @@ public class UIController : MonoBehaviour
                 Continue();
             }
         }
+
+        fps = 1 / Time.unscaledDeltaTime;
+        frames.Add(fps);
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            AverageFPS(frames);
+        }
+    }
+
+    private void AverageFPS(List<float> frames)
+    {
+        float FPStotal = 0;
+        float averageFPS;
+        for(int i = 0; i <frames.Count; i++)
+        {
+            FPStotal += frames[i];
+        }
+        averageFPS = FPStotal / frames.Count;
+        Debug.LogError($"average fps is {averageFPS}");
     }
 
     public void UpdateAmmoUI(int clipQty, int totalQty, int activeWeapon)
